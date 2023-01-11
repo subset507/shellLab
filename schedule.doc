@@ -1,0 +1,66 @@
+1. locale
+在linux根据用户的区域属性（即locale）来设置程序运行的语言环境和显示方式。
+具体而言，区域属性主要是指计算机用户使用的语言、所在的国家和地区，以及当地文化传统。为此，locale定义了一些常量，例如en_us.utf-8，表示语言为英语，地区为美国，字符集为utf-8；zh_cn.utf-8，表示语言为中文，地区为中国，字符集为utf-8
+linux通过一组环境变量来设置locale，包括但不限于LANG,LANGUAGE,LC_CTYPE,LC_TIME。LANG是默认值，如果不指定其他变量的值，则其他变量的默认值即是LANG的值，否则，则是指定的值。LC_ALL是一个宏，通过设置该变量的值，可以覆盖掉所有LC_*的值。
+这些环境变量比较适合在shell的配置脚本中设置，例如.bashrc或者.zshrc
+2. man
+用于获取系统参考手册的内容，极为实用，比--help更强大
+3. top（进程管理相关命令）
+OPTIONS,COMMANDS
+研究一下进程表字段的含义
+4. signal
+linux的进程间通信是通过相互发送signal来实现的。常见的signal有例如HUP,INT,QUIT,TERM,TSTP。语句kill pid，其原理就是向编号为pid的进程发送TERM信号，通知该进程terminate if possible
+5. 磁盘管理相关命令
+fdisk，一个dialog-driven的工具，用于创建、操作磁盘分区；mkfs.ext3，将磁盘分区做格式化为ext3；mnt，将格式化完毕的磁盘分区挂载到特定的目录；fsck，检查、修复磁盘分区；df，显示系统的磁盘空间；du，显示目录所用的磁盘空间的情况
+6. 理解filesystem
+filesystem的目的是，为数据在磁盘中的存储提供一个方案，所以也叫磁盘格式
+journaling filesystem，一种特定的磁盘格式类型，并不直接将数据写入磁盘，而是先写入一块临时的存储空间（journal）；
+7. sort和grep
+sort，对于文本行进行排序，-t，基于某个界定符将行划分为fields，-k，基于某个field进行排序，-k 3，表示基于第三个field进行排序，-d，按字典序排列，-n，按数值大小排序
+8. cat和less
+在不打开文件的情况下（这比用vim打开文件来的安全），获取文本文件的内容。cat一次性提取内容，less大概一个可滚动的窗口，便于交互式查看
+9. gzip和tar
+tar打包文件夹，gzip压缩文件
+gzip -d，解压
+10. subshell，命令替换以及background mode
+小括号，命令替换符号。其原理是，开启一个subshell，然后在subshell中执行小括号内部的命令，在小括号前面加上$符号，可以将subshell的输出提取到当前shell中
+subshell的作用是什么？可以为shell coding提供灵活性，这种灵活性主要体现在不同的命令和进程之间的互动和通信。比方说命令替换和管道。
+后台执行是不是一种subshell
+后台执行并不是一种subshell，而是shell和命令之间的一种关系，也即是shell只管启动命令的执行，但不等待命令执行的运行结束，以便shell不被该命令所占据
+就计算资源的消耗而言，subshell是比较昂贵的，滥用subshell可能导致代码效率的低下
+11. utf-8是unicode的一种实现，针对单字节字符和多字节字符分而治之，以节省空间。
+一个unicode_escape单元由斜杠，u，和一个16进制四位数构成
+unicode_escape bytes基于unicode_escape做decode即可得到str
+unicode_escape str基于utf8做encode，再基于unicode_escape做decode即可得到普通的str
+12. shell的built-in命令和外部命令 which和type
+13. 环境变量
+环境变量，刻画进程的运行环境的特性的变量
+对于ubuntu20.04 LTS，例如PATH，定义了运行程序和命令的查找目录，该变量定义在/etc/environment之中
+如果默认的登陆shell为bash，登陆shell启动时
+/etc/environment中的环境变量对于系统的所有用户有效，任何用户登陆都会加载此文件，如果希望仅对当前用户有效，则可以在~/.bashrc中设置或修改
+下一个问题，如果默认的登陆shell为zsh，则登陆shell启动时并不会加载bash相关的启动文件，那么该如何设置或修改环境变量？
+如果想在系统范围内修改，可以修改文件/etc/environment，修改之后重启shell即可生效，如果只希望对当前用户生效，则可以在.zshrc中设置和修改。
+zsh和bash是平层关系，而不是上下层关系。oh-my-zsh和zsh则是上下层关系
+14. 登陆shell，交互式shell和非交互式shell
+15. 文件权限和用户管理
+sudoer能否获得root的所有权限？
+新建删除用户，adduser和deluser比较友好，针对文件权限和组的操作
+16. 文件系统
+文件系统的作用是对于硬盘中存储的0和1进行解析，使之成为我们所熟悉的目录文件结构
+索引节点。为了顺利的解析文件，文件系统将一个文件相关的信息组成一个节点结构，例如文件名，大小，指向存有文件的每个硬盘块的指针。所有的索引节点组成节点表，节点表被放在每个物理设备的一块特定的区域。linux通过索引节点号来引用每一个节点。
+17. debian。一款早期的linux发行版。ubuntu是基于debian开发的，与debian有相同的APT管理系统，并共享来自debian库中的大量的包和库。Debian代表了当前存在的linux发行版的主流派系之一，其他的派系有arch和red hat等
+debian库，一个针对debian系的linux软件包库
+18. 软件包的安装和管理
+apt,dpkg，debian系的linux发行版用于安装和管理debian包的工具 dpkg,用于安装已经下载到本地的deb包，apt，从/etc/apt/sources.list中定义的软件镜像源中下载软件并安装
+dpkg -l和apt list --installed功能差不多，数据输出形式稍有不同
+apt-cache search
+这些搜索是基于package metadata来做的，而不是通过网络在线搜索。apt update会将debian库中软件的信息摘要下载到本地，从而可以通过apt-cache或者aptitude进行搜索
+什么叫做package cache和package metadata
+apt install,uninstall,purge
+19. 从源码安装sysstat
+20. linux会把系统内的所有文件记录在一个数据库文件中，使用locate可以在该数据库中去查找某个特定的文件，相比于find命令去遍历磁盘查找的方式效率会高得多；该数据库默认是一天更新一次，故而使用locate命令查找不到最近新建的文件，此时需要手动更新数据库，在命令行输入sudo updatedb即可完成更新
+which会在环境变量PATH指定的路径中，搜索某个系统命令的位置，并返回第一个搜索结果。故而其基本功能即是搜索系统可执行命令
+21.学习使用前述安装的sysstat
+22.学习使用git相关
+23.理解变量
+24.理解中括号
